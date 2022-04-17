@@ -1,6 +1,6 @@
 const { removeRole } = require('../../controllers/roles')
-const { addEditedTimedReply } = require('../../utils/messages')
 const { isAdmin } = require('../../utils/permissions')
+const { updateAssignmentEmbed } = require('../embeds/roleAssignmentEmbed')
 
 module.exports = {
   name: 'interactionCreate',
@@ -14,8 +14,10 @@ module.exports = {
         await interaction.editReply({ content: 'You\'re not allowed to execute this command.', components: [] })
         return
       }
-      await removeRole(interaction.client, interaction.guild, interaction.values[0])
-      addEditedTimedReply(interaction, { content: 'Role removed.', components: [] }, 5)
+
+      const { client, guild, values } = interaction
+      const removedRole = await removeRole(client, guild, values[0])
+      updateAssignmentEmbed('remove', client.roles, removedRole, interaction)
     }
   },
 }

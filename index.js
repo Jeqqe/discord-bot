@@ -40,7 +40,7 @@ commandFiles.forEach((file) => {
   client.commands.set(command.data.name, command)
 })
 
-// Loading EVENTS from ./src/commands
+// Loading EVENTS from ./src/events
 const eventFiles = fs
   .readdirSync('./src/events')
   .filter((file) => file.endsWith('.js'))

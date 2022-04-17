@@ -4,6 +4,7 @@ const addTimedReply = async (replyable, reply, delay) => {
   }).catch((err) => {
     console.log(err)
   })
+  return replyable
 }
 
 const addEditedTimedReply = async (replyable, reply, delay) => {
@@ -12,6 +13,7 @@ const addEditedTimedReply = async (replyable, reply, delay) => {
   }).catch((err) => {
     console.log(err)
   })
+  return replyable
 }
 
 module.exports = { addTimedReply, addEditedTimedReply }

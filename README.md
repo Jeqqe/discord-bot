@@ -18,10 +18,10 @@ Members of the said server are allowed to contribute to the bot and add features
   ```json
   {
     "CHANNELS": {
-      "ROLE_ASSIGNMENT": *role assignment channel*
+      "ROLE_ASSIGNMENT": *role assignment channel ID*
     },
     "ROLES": {
-      "ADMIN": *admin role ID*
+      "ADMIN": *admin role name*
     }
   }
   ```

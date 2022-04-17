@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
 const { MessageActionRow, MessageSelectMenu } = require('discord.js')
-const RoleAssignmentEmbed = require('../embeds/RoleAssignmentEmbed')
+const { sendAssignmentEmbed, updateAssignmentEmbed } = require('../embeds/roleAssignmentEmbed')
 
 const { CHANNELS: { ROLE_ASSIGNMENT } } = require('../../config.json')
 
@@ -43,14 +43,7 @@ module.exports = {
           addTimedReply(interaction, 'You can\'t use that command in this channel.', 5)
           break
         }
-        interaction.reply({
-          embeds: [RoleAssignmentEmbed(interaction.client.roles)],
-          fetchReply: true
-        }).then((message) => {
-          interaction.client.roles.forEach((role) => {
-            message.react(role.emote)
-          })
-        })
+        sendAssignmentEmbed(interaction.client.roles, interaction)
         break
       case 'add':
         addRole(
@@ -59,12 +52,12 @@ module.exports = {
           interaction.options.get('name').value,
           interaction.options.get('displayname').value,
           interaction.options.get('emote').value
-        ).then((role) => {
+        ).then(async (role) => {
           if (role.error) {
             addTimedReply(interaction, role.error, 5)
             return
           }
-          addTimedReply(interaction, `Added new role: ${role.emote} ${role.displayname}`, 5)
+          updateAssignmentEmbed('add', interaction.client.roles, role, interaction)
         })
         break
       case 'remove':
