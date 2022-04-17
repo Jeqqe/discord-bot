@@ -1,3 +1,5 @@
+const { addTimedReply } = require('../../utils/messages')
+
 module.exports = {
   name: 'interactionCreate',
   once: false,
@@ -11,11 +13,11 @@ module.exports = {
     try {
       await command.execute(interaction)
     } catch (error) {
-      console.error(error)
-      await interaction.reply({
+      console.log(error)
+      addTimedReply(interaction, {
         content: 'There was an error while executing this command!',
         ephemeral: true,
-      })
+      }, 5)
     }
   },
 }

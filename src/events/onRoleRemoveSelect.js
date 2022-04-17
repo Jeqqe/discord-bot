@@ -1,4 +1,5 @@
 const { removeRole } = require('../../controllers/roles')
+const { addEditedTimedReply } = require('../../utils/messages')
 const { isAdmin } = require('../../utils/permissions')
 
 module.exports = {
@@ -6,7 +7,7 @@ module.exports = {
   once: false,
   async execute(interaction) {
     if (!interaction.isSelectMenu()) return
-  
+
     if (interaction.customId === 'roleselect') {
       await interaction.deferUpdate()
       if (!isAdmin(interaction.member)) {
@@ -14,7 +15,7 @@ module.exports = {
         return
       }
       await removeRole(interaction.client, interaction.guild, interaction.values[0])
-      await interaction.editReply({ content: `Role removed.`, components: [] })
+      addEditedTimedReply(interaction, { content: 'Role removed.', components: [] }, 5)
     }
   },
 }

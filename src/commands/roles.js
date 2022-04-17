@@ -2,9 +2,10 @@ const { SlashCommandBuilder } = require('@discordjs/builders')
 const { MessageActionRow, MessageSelectMenu } = require('discord.js')
 const RoleAssignmentEmbed = require('../embeds/RoleAssignmentEmbed')
 
-const { CHANNELS: { ROLE_ASSIGNMENT }} = require('../../config.json')
+const { CHANNELS: { ROLE_ASSIGNMENT } } = require('../../config.json')
 
 const { isAdmin } = require('../../utils/permissions')
+const { addTimedReply } = require('../../utils/messages')
 const { addRole } = require('../../controllers/roles')
 
 module.exports = {
@@ -32,14 +33,14 @@ module.exports = {
   execute(interaction) {
     if (!interaction.isCommand()) return
     if (!isAdmin(interaction.member)) {
-      interaction.reply('You\'re not allowed to execute this command.')
+      addTimedReply(interaction, 'You\'re not allowed to execute this command.', 5)
       return
     }
 
     switch (interaction.options.getSubcommand()) {
       case 'summon':
         if (interaction.channel.id !== ROLE_ASSIGNMENT) {
-          interaction.reply('You can\'t use that command in this channel.')
+          addTimedReply(interaction, 'You can\'t use that command in this channel.', 5)
           break
         }
         interaction.reply({
@@ -60,10 +61,10 @@ module.exports = {
           interaction.options.get('emote').value
         ).then((role) => {
           if (role.error) {
-            interaction.reply(role.error)
+            addTimedReply(interaction, role.error, 5)
             return
           }
-          interaction.reply(`Added new role: ${role.emote} ${role.displayname}`)
+          addTimedReply(interaction, `Added new role: ${role.emote} ${role.displayname}`, 5)
         })
         break
       case 'remove':
@@ -88,7 +89,7 @@ module.exports = {
         })
         break
       default:
-        interaction.reply(`No valid subcommand found.`)
+        addTimedReply(interaction, 'No valid subcommand found.', 5)
     }
   },
 }

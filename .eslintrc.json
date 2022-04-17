@@ -11,6 +11,6 @@
   "rules": {
     "semi": ["error", "never"],
     "comma-dangle": ["error", "only-multiline"],
-    "no-param-reassign": ["error", "never"]
+    "no-param-reassign": ["error", { "props": false }]
   }
 }
