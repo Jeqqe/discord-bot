@@ -8,11 +8,22 @@ Members of the said server are allowed to contribute to the bot and add features
 
 ### Installing
 
-- Create .env to the root of the project and add the necessary information to the file
-  ```
+- Create .env to the root of the project and add the necessary bot information to the file
+  ```js
   DISCORD_TOKEN=*your bot token*
   CLIENT_ID=*your bot client id*
   GUILD_ID=*your guild id*
+  ```
+- Create config.json to the root of the project and add the necessary guild information to the file
+  ```json
+  {
+    "CHANNELS": {
+      "ROLE_ASSIGNMENT": *role assignment channel*
+    },
+    "ROLES": {
+      "ADMIN": *admin role ID*
+    }
+  }
   ```
 - run 'npm install'
 
@@ -23,9 +34,8 @@ Members of the said server are allowed to contribute to the bot and add features
 
 ## Authors
 
-[@Jeqqe](https://github.com/Jeqqe) -
+[@Jeqqe](https://github.com/Jeqqe) - Main author
 
-## Version History
+## Features
 
-- 0.1
-  - Initial Release
+- Role assignment by reactions

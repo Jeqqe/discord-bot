@@ -4,9 +4,27 @@
 require('dotenv').config()
 const fs = require('fs')
 const { Client, Collection, Intents } = require('discord.js')
+const mongoose = require('mongoose')
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] })
+const client = new Client({
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS],
+  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+})
 client.commands = new Collection()
+client.roles = []
+
+const { getAllRoles } = require('./controllers/roles')
+
+// Connecting to mongoDB
+console.log('Connecting to', process.env.MONGODB_URI)
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB')
+  })
+  .catch((error) => {
+    console.error('Error connecting to mongoDB:', error.message)
+  })
 
 // Loading COMMANDS from ./src/commands
 const commandFiles = fs
@@ -28,12 +46,14 @@ eventFiles.forEach((file) => {
   if (event.once) {
     client.once(event.name, (...args) => event.execute(...args))
   } else {
-    client.on(event.name, (...args) => event.execute(...args))
+    client.on(event.name, (...args) => event.execute(...args, client))
   }
 })
 
-client.once('ready', () => {
-  console.log('Ready!')
+client.once('ready', async () => {
+  const allRoles = await getAllRoles()
+  client.roles = allRoles
+  console.log('Application ready.')
 })
 
 client.login(process.env.DISCORD_TOKEN)

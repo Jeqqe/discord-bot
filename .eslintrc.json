@@ -10,6 +10,7 @@
   },
   "rules": {
     "semi": ["error", "never"],
-    "comma-dangle": ["error", "only-multiline"]
+    "comma-dangle": ["error", "only-multiline"],
+    "no-param-reassign": ["error", "never"]
   }
 }
