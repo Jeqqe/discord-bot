@@ -1,23 +1,26 @@
 const { SlashCommandBuilder } = require('@discordjs/builders')
-const { MessageActionRow, MessageSelectMenu } = require('discord.js')
-const { sendAssignmentEmbed, updateAssignmentEmbed } = require('../embeds/roleAssignmentEmbed')
+const { sendAssignmentEmbed } = require('../embeds/roleAssignment')
 
 const { CHANNELS: { ROLE_ASSIGNMENT } } = require('../../config.json')
 
 const { isAdmin } = require('../../utils/permissions')
 const { addTimedReply } = require('../../utils/messages')
-const { addRole } = require('../../controllers/roles')
+const { runSubCommandAdd } = require('./roleSubCommands/add')
+const { runSubCommandRemove } = require('./roleSubCommands/remove')
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('roles')
     .setDescription('Role assignment related commands.')
+
     .addSubcommand((subCmd) => subCmd
       .setName('summon')
       .setDescription('Summon role assignment embed'))
+
     .addSubcommand((subCmd) => subCmd
       .setName('remove')
       .setDescription('Remove role'))
+
     .addSubcommand((subCmd) => subCmd
       .setName('add')
       .setDescription('Add new role')
@@ -30,8 +33,13 @@ module.exports = {
       .addStringOption((option) => option.setName('emote')
         .setDescription('The emote for the new role')
         .setRequired(true))),
+
   execute(interaction) {
     if (!interaction.isCommand()) return
+    if (interaction.channel.id !== ROLE_ASSIGNMENT) {
+      addTimedReply(interaction, 'You can\'t use that command in this channel.', 5)
+      return
+    }
     if (!isAdmin(interaction.member)) {
       addTimedReply(interaction, 'You\'re not allowed to execute this command.', 5)
       return
@@ -39,47 +47,15 @@ module.exports = {
 
     switch (interaction.options.getSubcommand()) {
       case 'summon':
-        if (interaction.channel.id !== ROLE_ASSIGNMENT) {
-          addTimedReply(interaction, 'You can\'t use that command in this channel.', 5)
-          break
-        }
-        sendAssignmentEmbed(interaction.client.roles, interaction)
+        addTimedReply(interaction, 'Fetching embed...', 3)
+        sendAssignmentEmbed(interaction.channel, interaction.client.roles)
         break
       case 'add':
-        addRole(
-          interaction.client,
-          interaction.guild,
-          interaction.options.get('name').value,
-          interaction.options.get('displayname').value,
-          interaction.options.get('emote').value
-        ).then(async (role) => {
-          if (role.error) {
-            addTimedReply(interaction, role.error, 5)
-            return
-          }
-          updateAssignmentEmbed('add', interaction.client.roles, role, interaction)
-        })
+        addTimedReply(interaction, 'Adding new role...', 3)
+        runSubCommandAdd(interaction)
         break
       case 'remove':
-        interaction.reply({
-          content: 'Which role would you like to remove?',
-          components: [
-            new MessageActionRow()
-              .addComponents(
-                new MessageSelectMenu()
-                  .setCustomId('roleselect')
-                  .setPlaceholder('Nothing selected')
-                  .addOptions(
-                    interaction.client.roles.map((role) => ({
-                      label: role.name,
-                      description: role.displayname,
-                      value: role.id,
-                      emoji: role.emote
-                    }))
-                  ),
-              )
-          ]
-        })
+        runSubCommandRemove(interaction)
         break
       default:
         addTimedReply(interaction, 'No valid subcommand found.', 5)
