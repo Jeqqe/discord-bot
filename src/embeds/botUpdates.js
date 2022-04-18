@@ -6,7 +6,7 @@ const embed = (title, description) => new MessageEmbed()
   .setDescription('Update logs are posted automatically everytime new production build is taken into use.')
   .addFields([{
     name: title,
-    value: description.join('\n'),
+    value: description,
     inline: true
   }])
 
