@@ -9,7 +9,9 @@
     "ecmaVersion": "latest"
   },
   "rules": {
+    "no-console": "off",
     "semi": ["error", "never"],
-    "comma-dangle": ["error", "only-multiline"]
+    "comma-dangle": ["error", "only-multiline"],
+    "no-param-reassign": ["error", { "props": false }]
   }
 }
