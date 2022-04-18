@@ -6,7 +6,7 @@ Members of the said server are allowed to contribute to the bot and add features
 
 ## Getting Started
 
-### Installing
+### Installingd
 
 - Create .env to the root of the project and add the necessary bot information to the file
   ```js
