@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Notify server about update
-      uses: fjogeleit/http-request-action@v1
+      uses: CamiloGarciaLaRotta/watermelon-http-client@v1.5
       with:
         url: 'http://159.69.241.223:3000/deploy'
-        method: 'POST'
-        data: '{ "key": "value" }'
+        method: post
+        data: '{ "title": "dummy-todo", "userId": 1, "completed": false }'
