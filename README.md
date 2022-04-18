@@ -38,4 +38,4 @@ Members of the said server are allowed to contribute to the bot and add features
 
 ## Features
 
-- Role assignment by reactions
+- Role assignment by reactionsr
