@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Notify server about update
-      uses: satak/webrequest-action@master
+      uses: fjogeleit/http-request-action@v1
       with:
         url: 'http://159.69.241.223:3000/deploy'
         method: 'POST'
-        payload: '{"name": "some name"}'
+        data: '{ "key": "value" }'
