@@ -2,13 +2,8 @@ const { MessageEmbed } = require('discord.js')
 
 const embed = (title, description) => new MessageEmbed()
   .setColor('#0099ff')
-  .setTitle('Developer updates')
-  .setDescription('Update logs are posted automatically everytime new production build is taken into use.')
-  .addFields([{
-    name: title,
-    value: description.join('\n'),
-    inline: true
-  }])
+  .setTitle(title)
+  .setDescription(description)
 
 const sendBotUpdateEmbed = (channel, title, description) => {
   channel.send({
