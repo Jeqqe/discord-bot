@@ -3,6 +3,9 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 
+const { CHANNELS: { KOMI_UPDATES } } = require('../config.json')
+const { sendBotUpdateEmbed } = require('../src/embeds/botUpdates')
+
 const setupDatabase = () => {
   console.log('Connecting to', process.env.MONGODB_URI)
   mongoose
@@ -41,4 +44,22 @@ const setupEvents = (client) => {
   })
 }
 
-module.exports = { setupDatabase, setupCommands, setupEvents }
+const checkForUpdates = (client) => {
+  if (process.argv.length <= 2) return
+
+  const message = process.argv.slice(2).join(' ')
+  const title = message.split('\\n')[0]
+  const description = message.split(`${title}\\n`)[1].split('\\n')
+
+  const matchedGuild = client.guilds.cache.find((guild) => guild.id === process.env.GUILD_ID)
+  const matchedChannel = matchedGuild.channels.cache.find((channel) => channel.id === KOMI_UPDATES)
+
+  sendBotUpdateEmbed(matchedChannel, title, description)
+}
+
+module.exports = {
+  setupDatabase,
+  setupCommands,
+  setupEvents,
+  checkForUpdates
+}

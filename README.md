@@ -18,7 +18,8 @@ Members of the said server are allowed to contribute to the bot and add features
   ```json
   {
     "CHANNELS": {
-      "ROLE_ASSIGNMENT": *role assignment channel ID*
+      "ROLE_ASSIGNMENT": *role assignment channel ID*,
+      "KOMI_UPDATES": *updates channel ID*,
     },
     "ROLES": {
       "ADMIN": *admin role name*

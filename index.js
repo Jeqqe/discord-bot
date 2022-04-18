@@ -3,7 +3,9 @@
 
 require('dotenv').config()
 const { Client, Collection, Intents } = require('discord.js')
-const { setupDatabase, setupCommands, setupEvents } = require('./utils/setup')
+const {
+  setupDatabase, setupCommands, setupEvents, checkForUpdates
+} = require('./utils/setup')
 const { getAllRoles } = require('./controllers/roles')
 
 const client = new Client({
@@ -25,6 +27,9 @@ setupEvents(client)
 client.once('ready', async () => {
   const allRoles = await getAllRoles()
   client.roles = allRoles
+
+  checkForUpdates(client)
+
   console.log('Application ready.')
 })
 

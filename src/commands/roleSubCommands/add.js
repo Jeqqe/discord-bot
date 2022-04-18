@@ -3,6 +3,7 @@ const { linkToEmote } = require('../../../utils/links')
 const { addTimedReply } = require('../../../utils/messages')
 const { updateAssignmentEmbed } = require('../../embeds/roleAssignment')
 
+// TODO: Verify that link is valid image
 const validateNewEmote = (guild, client, name, emoteOrUrl) => {
   let emote = linkToEmote(guild, emoteOrUrl, name)
   if (!emote) {
