@@ -8,12 +8,8 @@ jobs:
   deployment:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: ${{ github.ref }}
-    - name: Send message to server
+    - name: Notify server about update
       uses: fjogeleit/http-request-action@v1
       with:
         url: 'http://159.69.241.223:3000/deploy'
         method: 'POST'
-        data: '{${{ github.event.head_commit.message }}}'
