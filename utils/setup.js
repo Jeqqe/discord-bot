@@ -46,10 +46,21 @@ const setupEvents = (client) => {
 
 const checkForUpdates = (client) => {
   if (process.argv.length <= 2) return
+  if (process.argv[2] !== 'update') return
 
-  const message = process.argv.slice(2).join(' ')
-  const title = message.split('\\n')[0]
-  const description = message.split(`${title}\\n`)[1].split('\\n')
+  let title
+  let description
+
+  try {
+    const file = fs.readFileSync('../deploy-server/update.txt', 'utf8')
+    const lines = file.toString().replace(/\r\n/g, '\n').split('\n')
+    // eslint-disable-next-line prefer-destructuring
+    title = lines[0]
+    lines.shift()
+    description = file.replace(title, '')
+  } catch (err) {
+    console.log('Error:', err.stack)
+  }
 
   const matchedGuild = client.guilds.cache.find((guild) => guild.id === process.env.GUILD_ID)
   const matchedChannel = matchedGuild.channels.cache.find((channel) => channel.id === KOMI_UPDATES)
