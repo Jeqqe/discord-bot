@@ -1,6 +1,7 @@
 const { removeRolebyID } = require('../../controllers/roles')
 const { isAdmin } = require('../../utils/permissions')
 const { updateAssignmentEmbed } = require('../embeds/roleAssignment')
+const { CHANNELS: { ROLE_ASSIGNMENT } } = require('../../config.json')
 
 module.exports = {
   name: 'interactionCreate',
@@ -18,10 +19,13 @@ module.exports = {
         guild, client, values, channel
       } = interaction
 
-      const removedRole = await removeRolebyID(values[0])
-      client.roles = client.roles.filter((role) => role.id !== removedRole.id)
+      if (channel.id !== ROLE_ASSIGNMENT) return
 
-      guild.roles.delete(values[0], 'Bai Bai').catch((err) => {
+      const removedRole = await removeRolebyID(values[0])
+      if (!removedRole) return
+
+      client.roles = client.roles.filter((role) => role.id !== removedRole.id)
+      guild.roles.delete(values[0]).catch((err) => {
         console.log(err)
       })
 
