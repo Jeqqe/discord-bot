@@ -1,16 +1,16 @@
 const { addRole } = require('../../../controllers/roles')
 const { linkToEmote } = require('../../../utils/links')
-const { addTimedReply } = require('../../../utils/messages')
 const { updateAssignmentEmbed } = require('../../embeds/roleAssignment')
 
 const validateNewEmote = async (guild, client, name, emoteOrUrl) => {
-  let emote = await linkToEmote(guild, emoteOrUrl, name)
-  if (!emote) {
-    emote = client.emojis.cache.find(
-      (emoji) => emoteOrUrl.includes(emoji.name && emoji.id)
-    )
-  }
-  if (!emote) return null
+  let emote = client.emojis.cache.find(
+    (emoji) => emoteOrUrl.includes(emoji.name && emoji.id)
+  )
+
+  if (emote) return emote
+
+  emote = await linkToEmote(guild, emoteOrUrl, name)
+  if (!emote) return false
   return emote
 }
 
@@ -23,7 +23,9 @@ const runSubCommandAdd = async (interaction) => {
   const displayname = options.get('displayname').value
   const emoteOrUrl = await validateNewEmote(guild, client, name, options.get('emote').value)
 
-  if (!emoteOrUrl) return { error: 'I do not know the said emote. :(' }
+  if (!emoteOrUrl) {
+    return { error: 'Given image url or emote is not a valid emote.' }
+  }
 
   let foundRole = guild.roles.cache.find((role) => role.name.toUpperCase() === name.toUpperCase())
   if (!foundRole) foundRole = await guild.roles.create({ name })
@@ -31,8 +33,7 @@ const runSubCommandAdd = async (interaction) => {
   const newRole = await addRole(foundRole.id, name, displayname, emoteOrUrl)
 
   if (newRole.error) {
-    addTimedReply(interaction, newRole.error, 5)
-    return false
+    return { error: newRole.error }
   }
 
   client.roles.push(newRole)

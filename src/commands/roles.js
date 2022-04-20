@@ -51,8 +51,13 @@ module.exports = {
         sendAssignmentEmbed(interaction.channel, interaction.client.roles)
         break
       case 'add':
-        addTimedReply(interaction, 'Adding new role...', 3)
-        runSubCommandAdd(interaction)
+        runSubCommandAdd(interaction).then((result) => {
+          if (result.error) {
+            addTimedReply(interaction, result.error, 5)
+            return
+          }
+          addTimedReply(interaction, 'Adding new role...', 5)
+        })
         break
       case 'remove':
         runSubCommandRemove(interaction)
