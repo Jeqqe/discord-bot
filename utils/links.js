@@ -8,9 +8,11 @@ const isValidUrl = (string) => {
   return url.protocol === 'http:' || url.protocol === 'https:'
 }
 
-const linkToEmote = (guild, url, name) => {
+const linkToEmote = async (guild, url, name) => {
   if (!isValidUrl(url)) return false
-  return guild.emojis.create(url, name).then((emoji) => emoji)
+  const emote = guild.emojis.create(url, name)
+  if (!emote) return false
+  return emote
 }
 
 module.exports = { isValidUrl, linkToEmote }
