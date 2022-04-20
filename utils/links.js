@@ -10,9 +10,13 @@ const isValidUrl = (string) => {
 
 const linkToEmote = async (guild, url, name) => {
   if (!isValidUrl(url)) return false
-  const emote = guild.emojis.create(url, name)
-  if (!emote) return false
-  return emote
+
+  try {
+    const emote = await guild.emojis.create(url, name)
+    return emote
+  } catch (_) {
+    return false
+  }
 }
 
 module.exports = { isValidUrl, linkToEmote }

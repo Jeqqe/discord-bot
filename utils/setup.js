@@ -65,7 +65,8 @@ const checkForUpdates = (client) => {
   const matchedGuild = client.guilds.cache.find((guild) => guild.id === process.env.GUILD_ID)
   const matchedChannel = matchedGuild.channels.cache.find((channel) => channel.id === KOMI_UPDATES)
 
-  sendBotUpdateEmbed(matchedChannel, title, description)
+  if (!description.includes('**notify discord**')) return
+  sendBotUpdateEmbed(matchedChannel, title, description.replace('**notify discord**', ''))
 }
 
 module.exports = {
