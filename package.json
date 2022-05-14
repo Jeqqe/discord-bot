@@ -2,25 +2,39 @@
   "name": "discord-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "deploy": "node src/commands/deployCommands.js",
+    "start": "ts-node -- src/index.ts",
+    "deploy": "ts-node -- src/utils/deployCommands.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jeqqe/discord-bot.git"
   },
   "author": "Jeqqe",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jeqqe/discord-bot/issues"
+  },
+  "homepage": "https://github.com/Jeqqe/discord-bot#readme",
+  "devDependencies": {
+    "@types/node": "^17.0.29",
+    "@typescript-eslint/eslint-plugin": "^5.21.0",
+    "@typescript-eslint/parser": "^5.21.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  },
   "dependencies": {
-    "@discordjs/builders": "^0.12.0",
-    "@discordjs/rest": "^0.3.0",
-    "discord-api-types": "^0.30.0",
+    "@discordjs/builders": "^0.13.0",
+    "@discordjs/rest": "^0.4.1",
+    "discord-api-types": "^0.32.0",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
-    "mongoose": "^6.3.0"
-  },
-  "devDependencies": {
-    "eslint": "^8.12.0",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.25.4"
+    "mongoose": "^6.3.1"
   }
 }
