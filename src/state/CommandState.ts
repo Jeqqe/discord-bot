@@ -1,5 +1,5 @@
 import { Command } from '../types/interfaces'
-import StateProvider, { StateType } from './StateProvider'
+import StateProvider, { StateType } from '../classes/StateProvider'
 
 export interface CommandsState {
   name: StateType.COMMANDS,

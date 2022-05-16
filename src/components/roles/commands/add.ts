@@ -2,7 +2,7 @@ import {
   CommandInteraction,
 } from 'discord.js'
 import { addRole } from '../../../database/controllers/roles'
-import { addRoleToState, getRoleFromState } from '../../../state/RolesState'
+import { addRoleToState, getRoleFromStateByName } from '../../../state/RolesState'
 import { addTimedInteractionReply } from '../../../utils/messages'
 import { validateEmoteUrlFromString } from '../../../utils/validate'
 
@@ -32,7 +32,7 @@ export default async (interaction: CommandInteraction) => {
   }
   if (!foundRole) foundRole = await guild.roles.create({ name })
 
-  if (!getRoleFromState(name)) {
+  if (!getRoleFromStateByName(name)) {
     const newRole = await addRole(foundRole.id, name, displayname, foundEmote.toString())
     if (!newRole) return
     addRoleToState(newRole)
