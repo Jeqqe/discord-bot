@@ -1,5 +1,4 @@
-/* eslint-disable import/prefer-default-export */
-export enum DiscordEvent {
+enum DiscordEvent {
   apiRequest = 'apiRequest',
   apiResponse = 'apiResponse',
   channelCreate = 'channelCreate',
@@ -70,3 +69,5 @@ export enum DiscordEvent {
   warn = 'warn',
   webhookUpdate = 'webhookUpdate',
 }
+
+export default DiscordEvent

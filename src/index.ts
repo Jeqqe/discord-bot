@@ -1,21 +1,18 @@
 import 'dotenv/config'
-import { Client, Intents } from 'discord.js'
-import {
-  setupCommands, setupDatabase, setupEvents, setupRoles,
-} from './utils/setup'
+import KomiClient from './classes/KomiClient'
 
-const client = new Client({
-  intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-  ],
-  partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
-})
+const start = async () => {
+  const client = new KomiClient()
 
-setupEvents(client)
-setupCommands()
-setupDatabase()
-setupRoles()
+  await client.loadCommands()
+  console.log('Commands loaded.')
 
-client.login(process.env.DISCORD_TOKEN)
+  client.deployCommands()
+
+  await client.loadEvents()
+  console.log('Events loaded.')
+
+  client.start()
+}
+
+start()
