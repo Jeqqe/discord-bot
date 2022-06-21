@@ -6,6 +6,7 @@ import { createKomiRole } from '../../../../database/controllers/role'
 import GeneralMessages from '../../../../locale/GeneralMessages'
 import RoleMessages from '../../../../locale/RoleMessages'
 import isAdmin from '../../../../utils/isAdmin'
+import { updateRoleAssignmentEmbed } from '../../messages/roleAssignmentEmbed'
 
 export enum Options {
   ROLE_LABEL = 'role_label',
@@ -62,7 +63,8 @@ export default new KomiSubCommand(
 
     if (!guildRole) return
 
-    createKomiRole(roleId, roleLabel, guildEmoji.toString(), guildRole.toString())
+    await createKomiRole(roleId, roleLabel, guildEmoji.toString(), guildRole.toString())
+    await updateRoleAssignmentEmbed()
 
     interaction.reply({
       content: RoleMessages.roleCreated,

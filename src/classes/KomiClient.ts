@@ -1,6 +1,11 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-import { Client, Collection, Intents } from 'discord.js'
+import {
+  Client,
+  Collection,
+  Guild,
+  Intents,
+} from 'discord.js'
 import { existsSync } from 'fs'
 import glob from 'glob'
 import mongoose from 'mongoose'
@@ -13,9 +18,11 @@ import KomiEvent from './KomiEvent'
 export default class KomiClient extends Client {
   private static instance: KomiClient
 
+  private homeGuild: Guild | undefined
+
   private commands: Collection<string, KomiCommand>
 
-  private assignmentRoles: IKomiRole[]
+  public assignmentRoles: IKomiRole[]
 
   constructor() {
     super({
@@ -30,6 +37,7 @@ export default class KomiClient extends Client {
     if (!KomiClient.instance) {
       KomiClient.instance = this
     }
+
     this.commands = new Collection()
     this.assignmentRoles = []
   }
@@ -42,12 +50,16 @@ export default class KomiClient extends Client {
     return this.commands
   }
 
-  public getAssignmentRoles() {
-    return this.assignmentRoles
+  public getHomeGuild() {
+    return this.homeGuild!
   }
 
-  public start() {
-    this.login(process.env.DISCORD_TOKEN)
+  public async start() {
+    await this.login(process.env.DISCORD_TOKEN)
+    this.homeGuild = this.guilds.cache.find((guild) => guild.id === process.env.HOME_GUILD_ID)
+
+    if (!this.homeGuild) return false
+    return true
   }
 
   public async loadCommands() {

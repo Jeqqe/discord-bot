@@ -10,6 +10,7 @@ import { getKomiRoleByGuildRole, removeKomiRole } from '../../../../database/con
 import GeneralMessages from '../../../../locale/GeneralMessages'
 import RoleMessages from '../../../../locale/RoleMessages'
 import isAdmin from '../../../../utils/isAdmin'
+import { updateRoleAssignmentEmbed } from '../../messages/roleAssignmentEmbed'
 
 export enum Options {
   ROLE = 'role',
@@ -68,6 +69,7 @@ export default new KomiSubCommand(
       })
 
     await removeKomiRole(komiRole)
+    await updateRoleAssignmentEmbed()
 
     interaction.reply({
       content: RoleMessages.roleRemoved,

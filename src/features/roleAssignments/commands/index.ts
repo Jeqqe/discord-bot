@@ -2,7 +2,6 @@ import KomiCommand from '../../../classes/KomiCommand'
 
 import add from './subCommands/add'
 import remove from './subCommands/remove'
-import setup from './subCommands/setup'
 
 export default new KomiCommand(
   'roles',
@@ -11,7 +10,6 @@ export default new KomiCommand(
     subCommands: [
       add,
       remove,
-      setup,
     ],
   },
 )

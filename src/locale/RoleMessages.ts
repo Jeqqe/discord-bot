@@ -7,4 +7,6 @@ export default {
   roleCreated: 'New role successfully created!',
   roleRemoved: 'Role has been removed!',
   roleCreationReason: 'Automatic role assignment role.',
+
+  roleAssignmentEmbedTitle: 'Select roles you would like to recieve notifications from.',
 }

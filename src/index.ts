@@ -15,7 +15,7 @@ const start = async () => {
   await client.loadEvents()
   console.log('Events loaded.')
 
-  client.start()
+  if (!(await client.start())) process.exit(1)
 }
 
 start()
