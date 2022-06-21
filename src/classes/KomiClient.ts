@@ -3,6 +3,9 @@ import { Routes } from 'discord-api-types/v9'
 import { Client, Collection, Intents } from 'discord.js'
 import { existsSync } from 'fs'
 import glob from 'glob'
+import mongoose from 'mongoose'
+import KomiRole, { IKomiRole } from '../database/models/role'
+import GeneralMessages from '../locale/GeneralMessages'
 
 import KomiCommand from './KomiCommand'
 import KomiEvent from './KomiEvent'
@@ -10,7 +13,9 @@ import KomiEvent from './KomiEvent'
 export default class KomiClient extends Client {
   private static instance: KomiClient
 
-  public commands: Collection<string, KomiCommand>
+  private commands: Collection<string, KomiCommand>
+
+  private assignmentRoles: IKomiRole[]
 
   constructor() {
     super({
@@ -25,12 +30,20 @@ export default class KomiClient extends Client {
     if (!KomiClient.instance) {
       KomiClient.instance = this
     }
-
     this.commands = new Collection()
+    this.assignmentRoles = []
   }
 
   public static getInstance() {
     return this.instance
+  }
+
+  public getCommands() {
+    return this.commands
+  }
+
+  public getAssignmentRoles() {
+    return this.assignmentRoles
   }
 
   public start() {
@@ -91,5 +104,16 @@ export default class KomiClient extends Client {
         this.on(event.getName(), (...args) => event.execute(...args))
       }
     })
+  }
+
+  public async setupDatabase() {
+    await mongoose.connect(process.env.MONGODB_URI!)
+      .then(() => console.log(GeneralMessages.databaseConnected))
+      .catch(() => console.log(GeneralMessages.databaseConnectedError))
+
+    const roles = await KomiRole.find({})
+    this.assignmentRoles = roles
+
+    console.log(`AssignmentRoles | Loaded ${this.assignmentRoles.length} role(s).`)
   }
 }
