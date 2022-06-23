@@ -1,5 +1,6 @@
 import { SlashCommandSubcommandBuilder } from '@discordjs/builders'
 import { CommandInteraction, GuildMember } from 'discord.js'
+import KomiClient from '../../../../classes/KomiClient'
 
 import KomiSubCommand from '../../../../classes/KomiSubCommand'
 import { createKomiRole } from '../../../../database/controllers/role'
@@ -20,14 +21,14 @@ enum Options {
 export default new KomiSubCommand(
   new SlashCommandSubcommandBuilder()
     .setName('add')
-    .setDescription('Creates a new guild assignment role')
+    .setDescription(RoleMessages.addCommandDescription)
     .addStringOption((option) => option
       .setName(Options.RoleLabel)
-      .setDescription('Label that is displayed in the role assignment button')
+      .setDescription(RoleMessages.labelOptionDescription)
       .setRequired(true))
     .addStringOption((option) => option
       .setName(Options.RoleType)
-      .setDescription('Label that is displayed in the role assignment button')
+      .setDescription(RoleMessages.typeOptionDescription)
       .setRequired(true)
       .addChoices(
         { name: 'Games', value: KomiRoleTypes.Games },
@@ -35,11 +36,11 @@ export default new KomiSubCommand(
       ))
     .addStringOption((option) => option
       .setName(Options.EmojiUrl)
-      .setDescription('Image url used to create a new emoji for the role')
+      .setDescription(RoleMessages.imageUrlOptionDescription)
       .setRequired(true))
     .addStringOption((option) => option
       .setName(Options.RoleColor)
-      .setDescription('Colorcode without the #. Used when creating a new color type role')),
+      .setDescription(RoleMessages.colorCodeOptionDescription)),
 
   async (interaction: CommandInteraction) => {
     if (!isAdmin(interaction.member as GuildMember)) {
@@ -56,6 +57,18 @@ export default new KomiSubCommand(
     const roleType = interaction.options.getString(Options.RoleType)! as KomiRoleTypes
     const roleColor = interaction.options.getString(Options.RoleColor)!
 
+    const roleExists = KomiClient.getInstance().assignmentRoles.some(
+      (komiRole) => komiRole.id === roleId,
+    )
+
+    if (roleExists) {
+      interaction.reply({
+        content: RoleMessages.roleAlreadyExistsError,
+        ephemeral: true,
+      })
+      return
+    }
+
     const guildEmoji = await interaction.guild?.emojis.create(emojiUrl!, roleId)
       .catch(() => {
         interaction.reply({
@@ -63,8 +76,6 @@ export default new KomiSubCommand(
           ephemeral: true,
         })
       }) || null
-
-    if (!guildEmoji) return
 
     const guildRole = await interaction.guild?.roles.create({
       name: roleLabel,
@@ -76,10 +87,14 @@ export default new KomiSubCommand(
           content: RoleMessages.roleCreationError,
           ephemeral: true,
         })
-        guildEmoji.delete()
       }) || null
 
-    if (!guildRole) return
+    if (!guildEmoji || !guildRole) {
+      await guildEmoji?.delete()
+      await guildRole?.delete()
+
+      return
+    }
 
     await createKomiRole(roleId, roleType, roleLabel, guildEmoji.toString(), guildRole.toString())
 

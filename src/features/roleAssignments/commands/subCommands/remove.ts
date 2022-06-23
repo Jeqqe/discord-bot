@@ -21,10 +21,10 @@ export enum Options {
 export default new KomiSubCommand(
   new SlashCommandSubcommandBuilder()
     .setName('remove')
-    .setDescription('Removes a guild assignment role')
+    .setDescription(RoleMessages.removeCommandDescription)
     .addRoleOption((option) => option
       .setName(Options.KomiRole)
-      .setDescription('The role you want to remove')
+      .setDescription(RoleMessages.roleOptionDescription)
       .setRequired(true)),
   async (interaction: CommandInteraction) => {
     if (!isAdmin(interaction.member as GuildMember)) {
@@ -51,18 +51,16 @@ export default new KomiSubCommand(
     )
 
     if (komiEmoji) {
-      const deletedEmoji = await komiEmoji.delete()
+      await komiEmoji.delete()
         .catch(() => {
           interaction.reply({
             content: RoleMessages.roleRemoveError,
             ephemeral: true,
           })
-        }) || null
-
-      if (!deletedEmoji) return
+        })
     }
 
-    await interaction.guild?.roles.delete(guildRole as Role)
+    await (guildRole as Role).delete()
       .catch(() => {
         interaction.reply({
           content: RoleMessages.roleRemoveError,
