@@ -17,8 +17,6 @@ export default {
   roleCreated: 'New role successfully created!',
   roleRemoved: 'Role has been removed!',
   roleCreationReason: 'Automatic role assignment role.',
-  roleAssigned: 'New role assigned.',
-  roleUnassigned: 'Role has been unassigned',
 
   gamesAssignmentEmbedTitle: 'Select roles you would like to receive notifications from',
   colorAssignmentEmbedTitle: 'Select a color you would like your name to be',

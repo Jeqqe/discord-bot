@@ -3,7 +3,6 @@ import KomiEvent from '../../../classes/KomiEvent'
 import { getKomiRoleById } from '../../../database/controllers/role'
 import DiscordEvent from '../../../enums/DiscordEvents'
 import KomiChannels from '../../../enums/KomiChannels'
-import RoleMessages from '../../../locale/RoleMessages'
 
 export default new KomiEvent(
   DiscordEvent.InteractionCreate,
@@ -22,17 +21,11 @@ export default new KomiEvent(
       (role) => role.toString() === komiRole?.role,
     )) {
       await memberRoles.add(guildRole!)
-      interaction.reply({
-        content: RoleMessages.roleAssigned,
-        ephemeral: true,
-      })
+      await interaction.deferUpdate()
       return
     }
 
     await memberRoles.remove(guildRole!)
-    interaction.reply({
-      content: RoleMessages.roleUnassigned,
-      ephemeral: true,
-    })
+    await interaction.deferUpdate()
   },
 )
