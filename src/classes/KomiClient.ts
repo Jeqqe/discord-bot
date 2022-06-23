@@ -62,10 +62,10 @@ export default class KomiClient extends Client {
   }
 
   public async loadCommands() {
-    const paths = glob.sync('src/features/*')
+    const paths = glob.sync('build/features/*')
 
     const commandModules = await Promise.all(paths.map((path) => {
-      const komiCommandPath = `${path}/commands/index.ts`
+      const komiCommandPath = `${path}/commands/index.js`
       if (!existsSync(komiCommandPath)) return null
       return import(`../../${komiCommandPath}`).then((module) => module.default as KomiCommand)
     }))
@@ -94,7 +94,7 @@ export default class KomiClient extends Client {
   }
 
   public async loadEvents() {
-    const paths = glob.sync('src/features/*')
+    const paths = glob.sync('build/features/*')
 
     const events: Promise<KomiEvent>[] = []
     paths.forEach((path) => {
