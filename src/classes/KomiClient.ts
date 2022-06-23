@@ -31,7 +31,7 @@ export default class KomiClient extends Client {
         Intents.FLAGS.GUILD_MESSAGES,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
       ],
-      partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+      partials: ['MESSAGE', 'REACTION'],
     })
 
     if (!KomiClient.instance) {
