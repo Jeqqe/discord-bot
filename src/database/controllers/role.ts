@@ -1,15 +1,17 @@
 import KomiClient from '../../classes/KomiClient'
+import KomiRoleTypes from '../../enums/KomiRoleTypes'
 import KomiRole, { IKomiRole } from '../models/role'
 
 /* DATABASE */
 export const createKomiRole = async (
   id: string,
+  type: KomiRoleTypes,
   label: string,
   emoji: string,
   role:string,
 ) => {
   const newRole = new KomiRole(({
-    id, label, emoji, role,
+    id, type, label, emoji, role,
   }))
 
   const savedRole = await newRole.save()
@@ -30,6 +32,9 @@ export const removeKomiRole = async (
 }
 
 /* CLIENT STATE */
+export const getKomiRolesByType = (type: KomiRoleTypes) => KomiClient.getInstance()
+  .assignmentRoles.find((role) => role.type === type)
+
 export const getKomiRoleById = (id: string) => KomiClient.getInstance()
   .assignmentRoles.find((role) => role.id === id)
 

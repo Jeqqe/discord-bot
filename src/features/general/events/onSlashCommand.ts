@@ -6,7 +6,7 @@ import DiscordEvent from '../../../enums/DiscordEvents'
 import GeneralMessages from '../../../locale/GeneralMessages'
 
 export default new KomiEvent(
-  DiscordEvent.interactionCreate,
+  DiscordEvent.InteractionCreate,
   false,
   async (interaction: CommandInteraction) => {
     const command = KomiClient.getInstance().getCommands().get(interaction.commandName)

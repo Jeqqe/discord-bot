@@ -51,15 +51,14 @@ export default class KomiClient extends Client {
   }
 
   public getHomeGuild() {
+    if (!this.homeGuild) {
+      this.homeGuild = this.guilds.cache.get(process.env.HOME_GUILD_ID!)
+    }
     return this.homeGuild!
   }
 
   public async start() {
     await this.login(process.env.DISCORD_TOKEN)
-    this.homeGuild = this.guilds.cache.find((guild) => guild.id === process.env.HOME_GUILD_ID)
-
-    if (!this.homeGuild) return false
-    return true
   }
 
   public async loadCommands() {

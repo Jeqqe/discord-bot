@@ -7,13 +7,15 @@ import {
 
 import KomiSubCommand from '../../../../classes/KomiSubCommand'
 import { getKomiRoleByGuildRole, removeKomiRole } from '../../../../database/controllers/role'
+import KomiRoleTypes from '../../../../enums/KomiRoleTypes'
 import GeneralMessages from '../../../../locale/GeneralMessages'
 import RoleMessages from '../../../../locale/RoleMessages'
 import isAdmin from '../../../../utils/isAdmin'
-import { updateRoleAssignmentEmbed } from '../../messages/roleAssignmentEmbed'
+import { colorUpdateEmbed } from '../../messages/colorAssignmentEmbed'
+import { gamesUpdateEmbed } from '../../messages/gamesAssignmentEmbed'
 
 export enum Options {
-  ROLE = 'role',
+  KomiRole = 'role',
 }
 
 export default new KomiSubCommand(
@@ -21,7 +23,7 @@ export default new KomiSubCommand(
     .setName('remove')
     .setDescription('Removes a guild assignment role')
     .addRoleOption((option) => option
-      .setName(Options.ROLE)
+      .setName(Options.KomiRole)
       .setDescription('The role you want to remove')
       .setRequired(true)),
   async (interaction: CommandInteraction) => {
@@ -33,7 +35,7 @@ export default new KomiSubCommand(
       return
     }
 
-    const guildRole = interaction.options.getRole(Options.ROLE)!
+    const guildRole = interaction.options.getRole(Options.KomiRole)!
     const komiRole = getKomiRoleByGuildRole(guildRole.toString())
 
     if (!komiRole) {
@@ -69,7 +71,17 @@ export default new KomiSubCommand(
       })
 
     await removeKomiRole(komiRole)
-    await updateRoleAssignmentEmbed()
+
+    switch (komiRole.type) {
+      case KomiRoleTypes.Games:
+        await gamesUpdateEmbed()
+        break
+      case KomiRoleTypes.Colors:
+        await colorUpdateEmbed()
+        break
+      default:
+        return
+    }
 
     interaction.reply({
       content: RoleMessages.roleRemoved,

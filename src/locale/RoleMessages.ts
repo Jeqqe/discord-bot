@@ -1,6 +1,6 @@
 export default {
   roleImageUrlError: 'Couldn\'t create new role with the given image URL. Please try another image.',
-  roleCreationError: 'Couldn\'t create new role with the given role label. Please try another name for label.',
+  roleCreationError: 'Couldn\'t create new role with the given details.',
   roleRemoveError: 'Couldn\'t remove the selected role. Please try again.',
   roleDoesNotExistError: 'Selected role does not exist within the bot.',
 
@@ -8,5 +8,6 @@ export default {
   roleRemoved: 'Role has been removed!',
   roleCreationReason: 'Automatic role assignment role.',
 
-  roleAssignmentEmbedTitle: 'Select roles you would like to recieve notifications from.',
+  gamesAssignmentEmbedTitle: 'Select roles you would like to receive notifications from',
+  colorAssignmentEmbedTitle: 'Select a color you would like your name to be',
 }

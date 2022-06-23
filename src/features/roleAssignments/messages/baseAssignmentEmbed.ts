@@ -1,25 +1,26 @@
 import {
-  MessageActionRow,
-  MessageAttachment,
-  MessageButton,
   MessageEmbed,
+  MessageAttachment,
   TextChannel,
+  MessageActionRow,
+  MessageButton,
+  MessageOptions,
 } from 'discord.js'
 import KomiClient from '../../../classes/KomiClient'
 import KomiChannels, { getKomiChannel } from '../../../enums/KomiChannels'
-import RoleMessages from '../../../locale/RoleMessages'
+import KomiRoleTypes from '../../../enums/KomiRoleTypes'
 
-const assignmentBanner = new MessageAttachment('./src/images/roleAssignmentBanner.png')
-
-export const roleAssignmentEmbed = new MessageEmbed()
-  .setColor('#8bd8d8')
-  .setTitle(RoleMessages.roleAssignmentEmbedTitle)
-  .setDescription('** **')
-  .setImage('attachment://roleAssignmentBanner.png')
-
-export const getRoleAssignmentMessage = () => {
-  const roleAssignmentChannel = getKomiChannel(KomiChannels.RoleAssignments) as TextChannel
-  const komiRoles = KomiClient.getInstance().assignmentRoles
+export const getAssignmentMessage = (
+  type: KomiRoleTypes,
+  embeds: MessageEmbed[],
+  files: MessageAttachment[],
+) => {
+  const roleAssignmentChannel = getKomiChannel(
+    KomiChannels.RoleAssignments,
+  ) as TextChannel
+  const komiRoles = KomiClient.getInstance().assignmentRoles.filter(
+    (komiRole) => komiRole.type === type,
+  )
 
   let buttonRow = new MessageActionRow()
   let counter = 1
@@ -49,29 +50,34 @@ export const getRoleAssignmentMessage = () => {
   if (buttonRow.components.length > 0) components.push(buttonRow)
 
   return {
-    embeds: [roleAssignmentEmbed],
-    files: [assignmentBanner],
+    embeds,
+    files,
     components,
-  }
+  } as MessageOptions
 }
 
-export const updateRoleAssignmentEmbed = async () => {
-  const assignmentChannel = getKomiChannel(KomiChannels.RoleAssignments) as TextChannel
+export const updateAssignmentEmbed = async (
+  type: KomiRoleTypes,
+  embed: MessageOptions,
+) => {
+  const assignmentChannel = getKomiChannel(
+    KomiChannels.RoleAssignments,
+  ) as TextChannel
   if (!assignmentChannel) return
 
   const messages = await assignmentChannel.messages.fetch({ limit: 50 })
   const foundMessages = messages.filter((message) => {
     if (message.embeds.find(
-      (embed) => embed.title === RoleMessages.roleAssignmentEmbedTitle,
+      (messageEmbed) => messageEmbed.footer?.text.includes(type),
     )) return true
     return false
   })
 
   if (foundMessages.size === 1) {
-    foundMessages.first()!.edit(getRoleAssignmentMessage())
+    await foundMessages.first()!.edit(embed)
     return
   }
 
   await assignmentChannel.bulkDelete(foundMessages)
-  await assignmentChannel.send(getRoleAssignmentMessage())
+  await assignmentChannel.send(embed)
 }

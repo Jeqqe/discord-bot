@@ -1,11 +1,13 @@
 import KomiEvent from '../../../classes/KomiEvent'
 import DiscordEvent from '../../../enums/DiscordEvents'
-import { updateRoleAssignmentEmbed } from '../messages/roleAssignmentEmbed'
+import { colorUpdateEmbed } from '../messages/colorAssignmentEmbed'
+import { gamesUpdateEmbed } from '../messages/gamesAssignmentEmbed'
 
 export default new KomiEvent(
-  DiscordEvent.ready,
+  DiscordEvent.Ready,
   false,
   async () => {
-    await updateRoleAssignmentEmbed()
+    await colorUpdateEmbed()
+    await gamesUpdateEmbed()
   },
 )
