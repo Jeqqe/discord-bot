@@ -1,8 +1,16 @@
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9'
-import { Client, Collection, Intents } from 'discord.js'
+import {
+  Client,
+  Collection,
+  Guild,
+  Intents,
+} from 'discord.js'
 import { existsSync } from 'fs'
 import glob from 'glob'
+import mongoose from 'mongoose'
+import KomiRole, { IKomiRole } from '../database/models/role'
+import GeneralMessages from '../locale/GeneralMessages'
 
 import KomiCommand from './KomiCommand'
 import KomiEvent from './KomiEvent'
@@ -10,7 +18,11 @@ import KomiEvent from './KomiEvent'
 export default class KomiClient extends Client {
   private static instance: KomiClient
 
-  public commands: Collection<string, KomiCommand>
+  private homeGuild: Guild | undefined
+
+  private commands: Collection<string, KomiCommand>
+
+  public assignmentRoles: IKomiRole[]
 
   constructor() {
     super({
@@ -19,7 +31,7 @@ export default class KomiClient extends Client {
         Intents.FLAGS.GUILD_MESSAGES,
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
       ],
-      partials: ['MESSAGE', 'CHANNEL', 'REACTION'],
+      partials: ['MESSAGE', 'REACTION'],
     })
 
     if (!KomiClient.instance) {
@@ -27,21 +39,33 @@ export default class KomiClient extends Client {
     }
 
     this.commands = new Collection()
+    this.assignmentRoles = []
   }
 
   public static getInstance() {
     return this.instance
   }
 
-  public start() {
-    this.login(process.env.DISCORD_TOKEN)
+  public getCommands() {
+    return this.commands
+  }
+
+  public getHomeGuild() {
+    if (!this.homeGuild) {
+      this.homeGuild = this.guilds.cache.get(process.env.HOME_GUILD_ID!)
+    }
+    return this.homeGuild!
+  }
+
+  public async start() {
+    await this.login(process.env.DISCORD_TOKEN)
   }
 
   public async loadCommands() {
-    const paths = glob.sync('src/features/*')
+    const paths = glob.sync('build/features/*')
 
     const commandModules = await Promise.all(paths.map((path) => {
-      const komiCommandPath = `${path}/commands/index.ts`
+      const komiCommandPath = `${path}/commands/index.js`
       if (!existsSync(komiCommandPath)) return null
       return import(`../../${komiCommandPath}`).then((module) => module.default as KomiCommand)
     }))
@@ -70,7 +94,7 @@ export default class KomiClient extends Client {
   }
 
   public async loadEvents() {
-    const paths = glob.sync('src/features/*')
+    const paths = glob.sync('build/features/*')
 
     const events: Promise<KomiEvent>[] = []
     paths.forEach((path) => {
@@ -91,5 +115,16 @@ export default class KomiClient extends Client {
         this.on(event.getName(), (...args) => event.execute(...args))
       }
     })
+  }
+
+  public async setupDatabase() {
+    await mongoose.connect(process.env.MONGODB_URI!)
+      .then(() => console.log(GeneralMessages.databaseConnected))
+      .catch(() => console.log(GeneralMessages.databaseConnectedError))
+
+    const roles = await KomiRole.find({})
+    this.assignmentRoles = roles
+
+    console.log(`AssignmentRoles | Loaded ${this.assignmentRoles.length} role(s).`)
   }
 }

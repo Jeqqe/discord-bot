@@ -1,14 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "outDir": "./build/",
+    "skipLibCheck": true,
+    "target": "es6",
     "module": "commonjs",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "allowJs": true,
+    "resolveJsonModule": true,
     "esModuleInterop": true,
-  }
+    "outDir": "./build",
+    "rootDir": "src",
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
