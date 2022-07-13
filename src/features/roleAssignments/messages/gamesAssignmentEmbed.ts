@@ -8,7 +8,7 @@ import { getAssignmentMessage, updateAssignmentEmbed } from './baseAssignmentEmb
 
 export const embedIdString = `Role - ${KomiRoleTypes.Games}`
 
-const banner = new MessageAttachment('./src/images/gamesAssignmentBanner.png')
+const banner = new MessageAttachment('./build/images/gamesAssignmentBanner.png')
 
 const embed = new MessageEmbed()
   .setColor('#8bd8d8')
